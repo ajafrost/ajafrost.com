@@ -976,7 +976,13 @@ p {
     }
 
     .hero-name {
-        font-size: clamp(3rem, 15vw, 5rem);
+        font-size: clamp(4rem, 18vw, 6rem);
+        line-height: 0.85;
+    }
+
+    .hero {
+        padding: 8rem 5% 4rem;
+        align-items: center;
     }
 }
 
