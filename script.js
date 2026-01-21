@@ -162,18 +162,10 @@ let tokenSequence = '';
 let tokenModeActive = false;
 let originalContent = new Map();
 
-// Check for saved token mode state on page load (before DOM ready for fastest activation)
-(function() {
-    if (localStorage.getItem('tokenMode') === 'enabled') {
-        // Add class immediately to prevent FOUC
-        document.documentElement.classList.add('token-mode-loading');
-        tokenModeActive = true;
-    }
-})();
-
-// Activate token mode as soon as DOM is ready
+// Activate token mode as soon as DOM is ready (if class was set by inline script)
 document.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('tokenMode') === 'enabled') {
+    if (document.documentElement.classList.contains('token-mode-loading')) {
+        tokenModeActive = true;
         enableTokenMode();
     }
 });
