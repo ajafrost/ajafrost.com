@@ -974,3 +974,135 @@ p {
 a, button {
     transition: all 0.15s ease;
 }
+
+/* ===================================
+   TOKEN MODE EASTER EGG
+   =================================== */
+
+/* Token Mode Active State */
+body.token-mode {
+    font-family: 'Courier New', 'Fira Code', 'Monaco', 'Consolas', monospace !important;
+    background-color: #0a0a0a;
+    color: #00ff00;
+}
+
+body.token-mode * {
+    font-family: 'Courier New', 'Fira Code', 'Monaco', 'Consolas', monospace !important;
+}
+
+/* Token Styling */
+body.token-mode .token {
+    display: inline-block;
+    padding: 2px 4px;
+    margin: 1px;
+    border-radius: 3px;
+    font-size: inherit;
+    line-height: inherit;
+    transition: all 0.2s ease;
+}
+
+body.token-mode .token:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+/* Token Color Classes - OpenAI Style */
+body.token-mode .token-1 {
+    background-color: #e0f2fe;
+    color: #0c4a6e;
+}
+
+body.token-mode .token-2 {
+    background-color: #dcfce7;
+    color: #14532d;
+}
+
+body.token-mode .token-3 {
+    background-color: #fce7f3;
+    color: #831843;
+}
+
+body.token-mode .token-4 {
+    background-color: #fef3c7;
+    color: #78350f;
+}
+
+body.token-mode .token-5 {
+    background-color: #e0e7ff;
+    color: #312e81;
+}
+
+/* Token Counter HUD */
+#token-counter {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #000000;
+    color: #00ff00;
+    padding: 20px;
+    border-radius: 8px;
+    font-family: 'Courier New', 'Fira Code', 'Monaco', 'Consolas', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    border: 2px solid #00ff00;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+    z-index: 10000;
+    min-width: 220px;
+    animation: slideInUp 0.3s ease-out;
+}
+
+#token-counter .token-counter-line {
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+}
+
+#token-counter .token-count-num,
+#token-counter .token-cost-num {
+    font-weight: bold;
+    color: #00ff00;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+#token-counter .token-counter-hint {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #00ff00;
+    font-size: 11px;
+    opacity: 0.7;
+    text-align: center;
+}
+
+/* Override background in token mode */
+body.token-mode .hero,
+body.token-mode .page-hero,
+body.token-mode .contact-grid-section {
+    background-color: #0a0a0a;
+}
+
+body.token-mode .top-nav {
+    background-color: #000000;
+    border-bottom: 1px solid #00ff00;
+}
+
+body.token-mode .hero-left,
+body.token-mode .page-left {
+    border-right: 1px solid #00ff00;
+}
+
+body.token-mode .hero-image,
+body.token-mode img {
+    filter: grayscale(100%) brightness(0.3) contrast(1.5);
+    border: 1px solid #00ff00;
+}
+
+/* Slide in animation for counter */
+@keyframes slideInUp {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

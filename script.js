@@ -153,3 +153,147 @@ const preloadImages = () => {
 window.addEventListener('load', () => {
     preloadImages();
 });
+
+// ===================================
+// TOKEN MODE EASTER EGG
+// ===================================
+
+let tokenSequence = '';
+let tokenModeActive = false;
+let originalContent = new Map();
+
+// Listen for "token" sequence
+document.addEventListener('keydown', (e) => {
+    tokenSequence += e.key.toLowerCase();
+
+    // Keep only last 5 characters
+    if (tokenSequence.length > 5) {
+        tokenSequence = tokenSequence.slice(-5);
+    }
+
+    // Toggle token mode when "token" is typed
+    if (tokenSequence === 'token') {
+        toggleTokenMode();
+        tokenSequence = ''; // Reset
+    }
+
+    // ESC to exit
+    if (e.key === 'Escape' && tokenModeActive) {
+        toggleTokenMode();
+    }
+});
+
+function toggleTokenMode() {
+    tokenModeActive = !tokenModeActive;
+
+    if (tokenModeActive) {
+        activateTokenMode();
+    } else {
+        deactivateTokenMode();
+    }
+}
+
+function activateTokenMode() {
+    document.body.classList.add('token-mode');
+
+    // Find all text elements
+    const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, span, a, button, label');
+
+    textElements.forEach((element, index) => {
+        // Skip if already tokenized or is the counter
+        if (element.classList.contains('tokenized') || element.id === 'token-counter') {
+            return;
+        }
+
+        // Store original content
+        originalContent.set(element, element.innerHTML);
+
+        // Tokenize text nodes only
+        tokenizeElement(element);
+        element.classList.add('tokenized');
+    });
+
+    // Create token counter HUD
+    createTokenCounter();
+}
+
+function deactivateTokenMode() {
+    document.body.classList.remove('token-mode');
+
+    // Restore original content
+    originalContent.forEach((html, element) => {
+        element.innerHTML = html;
+        element.classList.remove('tokenized');
+    });
+    originalContent.clear();
+
+    // Remove counter
+    const counter = document.getElementById('token-counter');
+    if (counter) {
+        counter.remove();
+    }
+}
+
+function tokenizeElement(element) {
+    // Get all text nodes
+    const walker = document.createTreeWalker(
+        element,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+    );
+
+    const textNodes = [];
+    let node;
+    while (node = walker.nextNode()) {
+        // Skip empty or whitespace-only nodes
+        if (node.textContent.trim().length > 0) {
+            textNodes.push(node);
+        }
+    }
+
+    // Process each text node
+    textNodes.forEach(textNode => {
+        const text = textNode.textContent;
+        const words = text.split(/(\s+)/); // Keep whitespace
+
+        const fragment = document.createDocumentFragment();
+        let tokenIndex = 0;
+
+        words.forEach(word => {
+            if (word.trim().length > 0) {
+                // Create token span
+                const span = document.createElement('span');
+                span.className = `token token-${(tokenIndex % 5) + 1}`;
+                span.textContent = word;
+                fragment.appendChild(span);
+                tokenIndex++;
+            } else {
+                // Preserve whitespace
+                fragment.appendChild(document.createTextNode(word));
+            }
+        });
+
+        textNode.parentNode.replaceChild(fragment, textNode);
+    });
+}
+
+function createTokenCounter() {
+    // Count all tokens
+    const tokens = document.querySelectorAll('.token');
+    const tokenCount = tokens.length;
+
+    // Estimate cost (rough calculation: ~750 tokens per $0.0001 for GPT-4)
+    const estimatedCost = (tokenCount / 750 * 0.0001).toFixed(6);
+
+    // Create HUD
+    const counter = document.createElement('div');
+    counter.id = 'token-counter';
+    counter.innerHTML = `
+        <div class="token-counter-line">TOKEN COUNT: <span class="token-count-num">${tokenCount.toLocaleString()}</span></div>
+        <div class="token-counter-line">EST. COST: <span class="token-cost-num">$${estimatedCost}</span></div>
+        <div class="token-counter-hint">Press ESC to exit</div>
+    `;
+
+    document.body.appendChild(counter);
+}
