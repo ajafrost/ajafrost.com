@@ -155,12 +155,28 @@ window.addEventListener('load', () => {
 });
 
 // ===================================
-// TOKEN MODE EASTER EGG
+// TOKEN MODE EASTER EGG (WITH PERSISTENCE)
 // ===================================
 
 let tokenSequence = '';
 let tokenModeActive = false;
 let originalContent = new Map();
+
+// Check for saved token mode state on page load (before DOM ready for fastest activation)
+(function() {
+    if (localStorage.getItem('tokenMode') === 'enabled') {
+        // Add class immediately to prevent FOUC
+        document.documentElement.classList.add('token-mode-loading');
+        tokenModeActive = true;
+    }
+})();
+
+// Activate token mode as soon as DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('tokenMode') === 'enabled') {
+        enableTokenMode();
+    }
+});
 
 // Listen for "token" sequence
 document.addEventListener('keydown', (e) => {
@@ -184,22 +200,27 @@ document.addEventListener('keydown', (e) => {
 });
 
 function toggleTokenMode() {
-    tokenModeActive = !tokenModeActive;
-
     if (tokenModeActive) {
-        activateTokenMode();
+        // Disable token mode
+        disableTokenMode();
+        localStorage.removeItem('tokenMode');
+        tokenModeActive = false;
     } else {
-        deactivateTokenMode();
+        // Enable token mode
+        enableTokenMode();
+        localStorage.setItem('tokenMode', 'enabled');
+        tokenModeActive = true;
     }
 }
 
-function activateTokenMode() {
+function enableTokenMode() {
     document.body.classList.add('token-mode');
+    document.documentElement.classList.remove('token-mode-loading');
 
     // Find all text elements
     const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, span, a, button, label');
 
-    textElements.forEach((element, index) => {
+    textElements.forEach((element) => {
         // Skip if already tokenized or is the counter
         if (element.classList.contains('tokenized') || element.id === 'token-counter') {
             return;
@@ -217,8 +238,9 @@ function activateTokenMode() {
     createTokenCounter();
 }
 
-function deactivateTokenMode() {
+function disableTokenMode() {
     document.body.classList.remove('token-mode');
+    document.documentElement.classList.remove('token-mode-loading');
 
     // Restore original content
     originalContent.forEach((html, element) => {

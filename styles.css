@@ -979,6 +979,23 @@ a, button {
    TOKEN MODE EASTER EGG
    =================================== */
 
+/* Token Mode Loading State - Prevents FOUC */
+html.token-mode-loading,
+html.token-mode-loading body {
+    background-color: #0a0a0a !important;
+    color: #00ff00 !important;
+}
+
+html.token-mode-loading * {
+    font-family: 'Courier New', 'Fira Code', 'Monaco', 'Consolas', monospace !important;
+    visibility: hidden; /* Hide until tokenization complete */
+}
+
+html.token-mode-loading .top-nav,
+html.token-mode-loading #token-counter {
+    visibility: visible; /* Keep nav visible */
+}
+
 /* Token Mode Active State */
 body.token-mode {
     font-family: 'Courier New', 'Fira Code', 'Monaco', 'Consolas', monospace !important;
@@ -988,6 +1005,7 @@ body.token-mode {
 
 body.token-mode * {
     font-family: 'Courier New', 'Fira Code', 'Monaco', 'Consolas', monospace !important;
+    visibility: visible; /* Restore visibility after tokenization */
 }
 
 /* Token Styling */
